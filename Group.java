@@ -18,6 +18,16 @@ public class Group {
 		assignments.add(a);
 	}
 	
+	public String getGroupName(){
+		return groupName;
+	}
+	public void setGroupName(String gn){
+		groupName = gn;
+	}
+	
+	public String toString(){
+		return groupName;
+	}
 	//public double calculateMark(){
 		//this method will calculate marks by taking assignment grades from the assignment arraylist
 		

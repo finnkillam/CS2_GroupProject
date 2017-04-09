@@ -9,4 +9,5 @@ public class Student {
 	public String getidNum(){
 		return idNum;
 	}
+	
 }

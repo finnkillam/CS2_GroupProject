@@ -16,5 +16,10 @@ public class Assignment {
 	public double getGrade(){
 		return grade;
 	}
-	
+	public void setWeight(double w){
+		weight = w;
+	}
+	public void setGrade(double g){
+		grade = g;
+	}
 }
