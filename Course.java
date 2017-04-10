@@ -59,10 +59,6 @@ public class Course {
 					tempGroup.addStudent(allStudents.get(endStu--));
 			}
 		}
-		
-		for (Group gr : allGroups) {
-			System.out.println(gr);
-		}
 	}
 	
 	//get-set below

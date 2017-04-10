@@ -11,14 +11,15 @@ import javafx.scene.text.*;
 import javafx.geometry.*;
 
 public class Demo extends Application {
-	private static Manager app;
+	public static Manager app;
 
 	// javafx stuff
-	private Button submitStart, submitInitial, importY, importN, submitImport;
+	private Button submitStart, submitInitial, importY, importN, submitImport, addCourseButton, removeCourseButton;
 	private Scene start, initial, initial2, importStudents, courseMenu;
-	private Stage main;
+	public Stage main;
 	private TextField profNameInput, initialCourseInput, stuFiInput, numFiInput, gradeFiInput;
-	private Text initialInfo, initial2Info, importInfo1;
+	private Text initialInfo, initial2Info, importInfo1, importInfo2;
+	private VBox coursesMain;
 
 	public void start(Stage primaryStage) {
 		Font titleBold = Font.font("Arial", FontWeight.BOLD, 20);
@@ -87,8 +88,8 @@ public class Demo extends Application {
 
 		initial2 = new Scene(initial2Main, 500, 500);
 		// end of Initial2 Scene
-		
-		//import students from text files
+
+		// import students from text files
 		GridPane inputFilePane = new GridPane();
 		Label stuFiLabel = new Label("Name of file with Student Names: ");
 		stuFiInput = new TextField();
@@ -109,15 +110,55 @@ public class Demo extends Application {
 		inputFilePane.setAlignment(Pos.CENTER);
 
 		importInfo1 = new Text("Please enter the file names.");
+		importInfo2 = new Text("Sorry, there was an error reading the file.");
+		importInfo2.setVisible(false);
 
 		VBox importMain = new VBox();
-		importMain.getChildren().addAll(importInfo1, inputFilePane);
+		importMain.getChildren().addAll(importInfo1, inputFilePane, importInfo2);
 		importMain.setAlignment(Pos.TOP_CENTER);
 		importMain.setSpacing(20);
 		importMain.setPadding(new Insets(20, 0, 0, 0));
 
 		importStudents = new Scene(importMain, 500, 500);
-		//end of import students from text files
+		// end of import students from text files
+		
+		// courses menu pane-mainmenu
+		Text courseMenuHeader = new Text("Select a Course");
+		addCourseButton = new Button("Add a Course");
+		removeCourseButton = new Button("Remove a Course");
+		addCourseButton.setOnAction(this::buttonPressed);
+		removeCourseButton.setOnAction(this::buttonPressed);
+		
+		coursesMain = new VBox();
+		coursesMain.getChildren().addAll(courseMenuHeader, addCourseButton, removeCourseButton);
+		coursesMain.setAlignment(Pos.TOP_CENTER);
+		coursesMain.setSpacing(20);
+		coursesMain.setPadding(new Insets(20, 0, 0, 0));
+		
+		courseMenu = new Scene(coursesMain, 500, 500);
+		// end of courses menu-main menu
+		
+		/* add-Remove course menu 
+		HBox initialBox = new HBox();
+		Label initialCourse = new Label("");
+		courseNameAR = new TextField();
+		submitChange = new Button("Submit");
+		submitChange.setOnAction(CIWP::buttonPressed);
+		initialBox.getChildren().addAll(initialCourse, courseNameAR, submitChange);
+		initialBox.setSpacing(10);
+		initialBox.setAlignment(Pos.CENTER);
+
+		aRCourseInfo = new Text("");
+
+		VBox initialMain = new VBox();
+		initialMain.getChildren().addAll(aRCourseInfo, initialBox);
+		initialMain.setAlignment(Pos.TOP_CENTER);
+		initialMain.setSpacing(20);
+		initialMain.setPadding(new Insets(20, 0, 0, 0));
+
+		return new Scene(initialMain, 500, 500);
+
+		*/ //end of courses menu-main menu
 
 		main.setTitle("Make Groups Great Again");
 		main.setScene(start);
@@ -126,14 +167,14 @@ public class Demo extends Application {
 
 	public void buttonPressed(ActionEvent e) {
 		if (e.getSource() == submitStart) {
-			if (profNameInput.getText() != null && !profNameInput.getText().isEmpty()) {
+			if (!profNameInput.getText().isEmpty()) {
 				app = new Manager(new Prof(profNameInput.getText()));
 				main.setScene(initial);
 				initialInfo.setText(app.getProf().getName() + ", you currently are not teaching any courses. Please add a course.");
 			}
 		}
 		if (e.getSource() == submitInitial) {
-			if (initialCourseInput.getText() != null && !initialCourseInput.getText().isEmpty()) {
+			if (!initialCourseInput.getText().isEmpty()) {
 				app.addCourse(new Course(initialCourseInput.getText()));
 				main.setScene(initial2);
 				initial2Info.setText("Would you like to import a student list for " + app.getCourses().get(0).getname() + "?");
@@ -143,32 +184,41 @@ public class Demo extends Application {
 			main.setScene(importStudents);
 		}
 		if (e.getSource() == importN) {
+			coursesMain.getChildren().add(1, getCoursesPane());
 			main.setScene(courseMenu);
 		}
 		if (e.getSource() == submitImport) {
-			
+			if (!stuFiInput.getText().isEmpty() && !numFiInput.getText().isEmpty() && !gradeFiInput.getText().isEmpty()) {
+				try {
+					app.getCourses().get(0).importStudents(stuFiInput.getText(), numFiInput.getText(), gradeFiInput.getText());
+					importInfo2.setVisible(true);
+					importInfo2.setText("Students Imported Successfully");
+					coursesMain.getChildren().add(1, getCoursesPane());
+					main.setScene(courseMenu);
+				} catch (IOException error) {
+					importInfo2.setVisible(true);
+				}
+			}
 		}
+		
 	}
 
 	public static void main(String[] args) {
 		launch();
+		// save groups.txt below this line
 
-	}// save groups.txt below this line
-
-	/*
-	 * Old Text based code below
-	 * 
-	 * public static void menu() { System.out.println("Main Menu: ");
-	 * System.out.println("1. Add a Course");
-	 * System.out.println("2. Import students to a course");
-	 * System.out.println("3. Add a single student to a course");
-	 * System.out.println("4. Auto-assign groups for a course");
-	 * System.out.println("5. "); System.out.println(""); }
-	 * 
-	 * public static void tut() { Scanner kb = new Scanner(System.in);
-	 * try {
-	 * app.getCourses().get(0).importStudents(stuFile, idFile, gradesFile); }
-	 * catch (IOException e) {
-	 * System.out.println("Sorry, there was an error reading the file."); } } }
-	 */
+	}
+	
+	private Pane getCoursesPane () {
+		GridPane courseList = new GridPane();
+		for (int i = 0; i < Demo.app.getCourses().size(); i++) {
+			Button temp = new Button(Demo.app.getCourses().get(i).getname());
+			courseList.add(temp, 0, i);
+			temp.setOnAction(this::buttonPressed);
+		}
+		courseList.setVgap(20);
+		courseList.setAlignment(Pos.CENTER);
+		return courseList;
+	}
+	
 }

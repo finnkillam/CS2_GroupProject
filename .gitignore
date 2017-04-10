@@ -12,3 +12,5 @@
 *.xml
 *.tis
 .metadata/
+/CallItWindowPain.class
+/CIWP.class
