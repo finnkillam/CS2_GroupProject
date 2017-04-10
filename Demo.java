@@ -15,7 +15,7 @@ public class Demo extends Application {
 	public static Manager app;
 
 	// javafx stuff
-	private Button submitStart, submitInitial, importY, importN, submitImport, addCourseButton, removeCourseButton, submitChange, autoAssign, viewGroups;
+	private Button submitStart, submitInitial, importY, importN, submitImport, addCourseButton, removeCourseButton, submitChange, autoAssign, viewGroups, backButton;
 	private Scene start, initial, initial2, importStudents, courseMenu, courseMenu2;
 	public Stage main;
 	private TextField profNameInput, initialCourseInput, stuFiInput, numFiInput, gradeFiInput, courseNameAR;
@@ -23,7 +23,7 @@ public class Demo extends Application {
 	private Label ar;
 	private VBox coursesMain;
 	private boolean addCourseOption;
-	private ArrayList<Button> courseButtonArray = new ArrayList<Button>();
+	private LinkedList courseButtonArray = new LinkedList();
 
 	public void start(Stage primaryStage) {
 		Font titleBold = Font.font("Arial", FontWeight.BOLD, 20);
@@ -240,6 +240,9 @@ public class Demo extends Application {
 				}
 			}
 		}
+		if (e.getSource() == backButton) {
+			main.setScene(courseMenu);
+		}
 		
 	}
 
@@ -251,9 +254,10 @@ public class Demo extends Application {
 	
 	private Pane getCoursesPane () {
 		GridPane courseList = new GridPane();
+		courseButtonArray.clear();
 		for (int i = 0; i < Demo.app.getCourses().size(); i++) {
 			Button temp = new Button(Demo.app.getCourses().get(i).getname());
-			courseButtonArray.add(temp);
+			courseButtonArray.addToEnd(temp);
 			courseList.add(temp, 0, i);
 			temp.setOnAction(this::buttonPressed);
 		}
@@ -269,11 +273,13 @@ public class Demo extends Application {
 		autoAssign.setOnAction(this::buttonPressed);
 		viewGroups = new Button("View Groups");
 		viewGroups.setOnAction(this::buttonPressed);
-		arVBOX.getChildren().addAll(autoAssign,viewGroups);
+		backButton = new Button("Back");
+		backButton.setOnAction(this::buttonPressed);
+		arVBOX.getChildren().addAll(autoAssign,viewGroups,backButton);
 		arVBOX.setSpacing(10);
 		arVBOX.setAlignment(Pos.CENTER);
 
-		Text coursequestion = new Text("What would you like to do in " + app.getCourses().get(index-1).getname() + "?");
+		Text coursequestion = new Text("What would you like to do in " + app.getCourses().get(index).getname() + "?");
 		groupsContainer = new Text();
 
 		VBox courseMain2 = new VBox();

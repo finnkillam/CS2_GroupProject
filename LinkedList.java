@@ -1,3 +1,5 @@
+import javafx.scene.control.Button;
+
 public class LinkedList {
 	private Node front;
 	private int count;
@@ -9,14 +11,14 @@ public class LinkedList {
 	}
 
 	// add a node to the front of the linked list
-	public void addToFront(Assignment d) {
+	public void addToFront(Button d) {
 		Node n;
 		n = new Node(d, front);
 		front = n;
 		count++;
 	}
 
-	public void addToEnd(Assignment d) {
+	public void addToEnd(Button d) {
 		Node n;
 		n = new Node(d, null);
 		Node curr = front;
@@ -55,7 +57,7 @@ public class LinkedList {
 	}
 
 	// get the content of the first node
-	public Assignment getFrontData() {
+	public Button getFrontData() {
 		if (front == null)
 			return null;
 		else
@@ -68,34 +70,15 @@ public class LinkedList {
 	}
 
 	// returns node at input index
-	public Assignment get(int index) {
+	public Button get(int index) {
 		Node curr = front;
 		for (int i = 0; i < index; i++)
 			curr = curr.getNext();
 		return curr.getData();
 	}
 
-	// returns -1 if the string is not found, otherwise, returns index of
-	// string.
-	public int containsName(String d) {
-		Node curr = front;
-		boolean found = false;
-		int index = -1;
-		while (curr != null && !found) {
-			index++;
-			if (curr.getData().getName().equals(d))
-				found = true;
-			curr = curr.getNext();
-		}
-		if (!found)
-			return -1;
-		else
-			return index;
-
-	}
-
 	// returns -1 if the string is not found, otherwise, returns index of string.
-	public int contains(Assignment d) {
+	public int contains(Button d) {
 		Node curr = front;
 		boolean found = false;
 		int index = -1;
