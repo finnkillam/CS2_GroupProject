@@ -12,8 +12,6 @@ public class Assignment {
 		complete = false;
 	}
 	
-	
-	
 	public String getName() {
 		return name;
 	}

@@ -6,10 +6,16 @@ public class Manager {
 	
 	public Manager(Prof prof) {
 		this.prof = prof;
+		courses = new ArrayList<Course>();
 	}
 	
 	public void addCourse (Course course) {
 		courses.add(course);
+	}
+	public void removeCourse (String name) {
+		for (int i =0; i<courses.size(); i++) 
+			if (courses.get(i).getname().equalsIgnoreCase(name))
+				courses.remove(i);
 	}
 
 	public Prof getProf() {
