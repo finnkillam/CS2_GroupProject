@@ -1,14 +1,14 @@
 //class Node
 public class Node {
-	private String data;
+	private Assignment data;
 	private Node next;
 
-	public Node(String d, Node n) {
+	public Node(Assignment d, Node n) {
 		data = d;
 		next = n;
 	}
 
-	public String getData() {
+	public Assignment getData() {
 		return data;
 	}
 
@@ -16,7 +16,7 @@ public class Node {
 		return next;
 	}
 
-	public void setData(String d) {
+	public void setData(Assignment d) {
 		data = d;
 	}
 

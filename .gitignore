@@ -1,0 +1,14 @@
+/Assignment.class
+/Course.class
+/Group.class
+/LinkedList.class
+/Node.class
+/Person.class
+/Student.class
+/Manager.class
+/Prof.class
+/Demo.class
+
+*.xml
+*.tis
+.metadata/

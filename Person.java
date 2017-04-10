@@ -1,17 +1,17 @@
 
 public class Person {
 	private String name;
-	
-	public Person(String n){
+
+	public Person(String n) {
 		name = n;
 	}
-	
-	public String getName(){
+
+	public String getName() {
 		return name;
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return name;
 	}
-	
+
 }
