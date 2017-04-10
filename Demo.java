@@ -1,68 +1,150 @@
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Demo {
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.scene.layout.*;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+import javafx.scene.text.*;
+import javafx.geometry.*;
+
+public class Demo extends Application {
 	private static Manager app;
 
-	public static void main(String[] args) {
-		Scanner kb = new Scanner(System.in);
-		boolean quit = false;
+	// javafx stuff
+	private Button submitStart, submitInitial, importY, importN;
+	private Scene start, initial, initial2;
+	private Stage main;
+	private TextField profNameInput, initialCourseInput;
+	private Text initialInfo, initial2Info;
 
-		System.out.println("Welcome to M.G.G.A.");
-		System.out.println("Please enter your name: ");
-		app = new Manager(new Prof(kb.nextLine()));
+	public void start(Stage primaryStage) {
+		Font titleBold = Font.font("Arial", FontWeight.BOLD, 20);
+		Font fontReg1 = Font.font("Arial", FontWeight.NORMAL, 14);
+		main = primaryStage;
 
-		while (quit == false) {
-			// Initial setup
-			if (app.getCourses().isEmpty()) {
-				tut();
+		// start menu Scene
+		HBox profBox = new HBox();
+		Label namePrompt = new Label("Please enter your name: ");
+		profNameInput = new TextField();
+		submitStart = new Button("Submit");
+		submitStart.setOnAction(this::buttonPressed);
+		profBox.getChildren().addAll(namePrompt, profNameInput, submitStart);
+		profBox.setSpacing(10);
+		profBox.setAlignment(Pos.CENTER);
+		Text welcome = new Text("Welcome to M.G.G.A.");
+		welcome.setFont(titleBold);
 
-			}
-			menu();
-			while (!kb.hasNextInt()) {
-				System.out.print("Please enter the number of the item");
-			}
-			int option = kb.nextInt();
-			kb.nextLine();
-		}// end of program while loop
-		
+		VBox startMain = new VBox();
+		startMain.getChildren().addAll(welcome, profBox);
+		startMain.setAlignment(Pos.TOP_CENTER);
+		startMain.setSpacing(20);
+		startMain.setPadding(new Insets(20, 0, 0, 0));
 
-	}// save groups.txt below this line
-		
+		start = new Scene(startMain, 500, 500);
+		// End of start menu scene
 
+		// start Inital Scene
+		HBox initialBox = new HBox();
+		Label initialCourse = new Label("Please enter the name of the course: ");
+		initialCourseInput = new TextField();
+		submitInitial = new Button("Submit");
+		submitInitial.setOnAction(this::buttonPressed);
+		initialBox.getChildren().addAll(initialCourse, initialCourseInput, submitInitial);
+		initialBox.setSpacing(10);
+		initialBox.setAlignment(Pos.CENTER);
 
-	public static void menu() {
-		System.out.println("Main Menu: ");
-		System.out.println("1. Add a Course");
-		System.out.println("2. Import students to a course");
-		System.out.println("3. Add a single student to a course");
-		System.out.println("4. Auto-assign groups for a course");
-		System.out.println("5. ");
-		System.out.println("");
+		initialInfo = new Text("");
+
+		VBox initialMain = new VBox();
+		initialMain.getChildren().addAll(initialInfo, initialBox);
+		initialMain.setAlignment(Pos.TOP_CENTER);
+		initialMain.setSpacing(20);
+		initialMain.setPadding(new Insets(20, 0, 0, 0));
+
+		initial = new Scene(initialMain, 500, 500);
+		// end of Initial Scene
+
+		// start Inital2 Scene
+		HBox initial2Box = new HBox();
+		importY = new Button("Yes");
+		importN = new Button("No");
+		importY.setOnAction(this::buttonPressed);
+		importN.setOnAction(this::buttonPressed);
+		initial2Box.getChildren().addAll(importY, importN);
+		initial2Box.setSpacing(10);
+		initial2Box.setAlignment(Pos.CENTER);
+
+		initial2Info = new Text("");
+
+		VBox initial2Main = new VBox();
+		initial2Main.getChildren().addAll(initial2Info, initial2Box);
+		initial2Main.setAlignment(Pos.TOP_CENTER);
+		initial2Main.setSpacing(20);
+		initial2Main.setPadding(new Insets(20, 0, 0, 0));
+
+		initial2 = new Scene(initial2Main, 500, 500);
+		// end of Initial2 Scene
+
+		main.setTitle("Make Groups Great Again");
+		main.setScene(start);
+		main.show();
 	}
 
-	public static void tut() {
-		Scanner kb = new Scanner(System.in);
-		System.out.println(
-				app.getProf().getName() + ", you currently are not teaching any courses. Please add a course.");
-		System.out.println("Please enter the name of the course: ");
-		app.addCourse(new Course(kb.nextLine()));
-		System.out.println("Would you like to import a student list? (Y/N)");
-		String answer = kb.next();
-		kb.nextLine();
-		if (answer.equalsIgnoreCase("y")) {
-			System.out.println("Ok, please enter the name of the Students file: ");
-			String stuFile = kb.nextLine();
-			System.out.println("Now enter the name of the Student ID file: ");
-			String idFile = kb.nextLine();
-			System.out.println("Now enter the name of the Student Grades file: ");
-			String gradesFile = kb.nextLine();
-			try {
-				app.getCourses().get(0).importStudents(stuFile, idFile, gradesFile);
-			} catch (IOException e) {
-				System.out.println("Sorry, there was an error reading the file.");
-			}
+	public void buttonPressed(ActionEvent e) {
+		if (e.getSource() == submitStart) {
+			//add in checks for empty form
+			app = new Manager(new Prof(profNameInput.getText()));
+			main.setScene(initial);
+			initialInfo.setText(app.getProf().getName() + ", you currently are not teaching any courses. Please add a course.");
+		}
+		if (e.getSource() == submitInitial) {
+			//add in checks for empty form
+			app.addCourse(new Course(initialCourseInput.getText()));
+			main.setScene(initial2);
+			initial2Info.setText("Would you like to import a student list for " + app.getCourses().get(0).getname() + "?");
+		}
+		if (e.getSource() == importY) {
+			
+		}
+		if (e.getSource() == importN) {
+			//Goto menu
 		}
 	}
 
+	public static void main(String[] args) {
+		launch();
+
+	}// save groups.txt below this line
+
+	/*
+	 * Old Text based code below
+	 * 
+	 * public static void menu() { System.out.println("Main Menu: ");
+	 * System.out.println("1. Add a Course");
+	 * System.out.println("2. Import students to a course");
+	 * System.out.println("3. Add a single student to a course");
+	 * System.out.println("4. Auto-assign groups for a course");
+	 * System.out.println("5. "); System.out.println(""); }
+	 * 
+	 * public static void tut() { Scanner kb = new Scanner(System.in);
+	 * System.out.println(app.getProf().getName() +
+	 * ", you currently are not teaching any courses. Please add a course.");
+	 * System.out.println("Please enter the name of the course: ");
+	 * app.addCourse(new Course(kb.nextLine()));
+	 * System.out.println("Would you like to import a student list? (Y/N)");
+	 * String answer = kb.next(); kb.nextLine(); if
+	 * (answer.equalsIgnoreCase("y")) {
+	 * System.out.println("Ok, please enter the name of the Students file: ");
+	 * String stuFile = kb.nextLine();
+	 * System.out.println("Now enter the name of the Student ID file: "); String
+	 * idFile = kb.nextLine();
+	 * System.out.println("Now enter the name of the Student Grades file: ");
+	 * String gradesFile = kb.nextLine(); try {
+	 * app.getCourses().get(0).importStudents(stuFile, idFile, gradesFile); }
+	 * catch (IOException e) {
+	 * System.out.println("Sorry, there was an error reading the file."); } } }
+	 */
 }
