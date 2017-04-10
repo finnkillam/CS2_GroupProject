@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javafx.application.Application;
@@ -14,12 +15,15 @@ public class Demo extends Application {
 	public static Manager app;
 
 	// javafx stuff
-	private Button submitStart, submitInitial, importY, importN, submitImport, addCourseButton, removeCourseButton;
-	private Scene start, initial, initial2, importStudents, courseMenu;
+	private Button submitStart, submitInitial, importY, importN, submitImport, addCourseButton, removeCourseButton, submitChange, autoAssign, viewGroups;
+	private Scene start, initial, initial2, importStudents, courseMenu, courseMenu2;
 	public Stage main;
-	private TextField profNameInput, initialCourseInput, stuFiInput, numFiInput, gradeFiInput;
-	private Text initialInfo, initial2Info, importInfo1, importInfo2;
+	private TextField profNameInput, initialCourseInput, stuFiInput, numFiInput, gradeFiInput, courseNameAR;
+	private Text initialInfo, initial2Info, importInfo1, importInfo2, aRCourseInfo, groupsContainer;
+	private Label ar;
 	private VBox coursesMain;
+	private boolean addCourseOption;
+	private ArrayList<Button> courseButtonArray = new ArrayList<Button>();
 
 	public void start(Stage primaryStage) {
 		Font titleBold = Font.font("Arial", FontWeight.BOLD, 20);
@@ -138,27 +142,27 @@ public class Demo extends Application {
 		courseMenu = new Scene(coursesMain, 500, 500);
 		// end of courses menu-main menu
 		
-		/* add-Remove course menu 
-		HBox initialBox = new HBox();
-		Label initialCourse = new Label("");
+		// add-Remove course menu 
+		HBox arHBOX = new HBox();
+		ar = new Label("");
 		courseNameAR = new TextField();
 		submitChange = new Button("Submit");
-		submitChange.setOnAction(CIWP::buttonPressed);
-		initialBox.getChildren().addAll(initialCourse, courseNameAR, submitChange);
-		initialBox.setSpacing(10);
-		initialBox.setAlignment(Pos.CENTER);
+		submitChange.setOnAction(this::buttonPressed);
+		arHBOX.getChildren().addAll(initialCourse, courseNameAR, submitChange);
+		arHBOX.setSpacing(10);
+		arHBOX.setAlignment(Pos.CENTER);
 
 		aRCourseInfo = new Text("");
 
-		VBox initialMain = new VBox();
-		initialMain.getChildren().addAll(aRCourseInfo, initialBox);
-		initialMain.setAlignment(Pos.TOP_CENTER);
-		initialMain.setSpacing(20);
-		initialMain.setPadding(new Insets(20, 0, 0, 0));
+		VBox courseMain2 = new VBox();
+		courseMain2.getChildren().addAll(aRCourseInfo, arHBOX);
+		courseMain2.setAlignment(Pos.TOP_CENTER);
+		courseMain2.setSpacing(20);
+		courseMain2.setPadding(new Insets(20, 0, 0, 0));
 
-		return new Scene(initialMain, 500, 500);
+		courseMenu2 = new Scene(courseMain2, 500, 500);
 
-		*/ //end of courses menu-main menu
+		//end of courses menu-main menu */
 
 		main.setTitle("Make Groups Great Again");
 		main.setScene(start);
@@ -200,6 +204,42 @@ public class Demo extends Application {
 				}
 			}
 		}
+		if (e.getSource() == addCourseButton) {
+			aRCourseInfo.setText("Add a Course");
+			ar.setText("Name of the course to add: ");
+			main.setScene(courseMenu2);
+			addCourseOption = true;
+		}
+		if (e.getSource() == removeCourseButton) {
+			aRCourseInfo.setText("Remove a Course");
+			ar.setText("Name of the course to remove: ");
+			main.setScene(courseMenu2);
+			addCourseOption = false;
+		}
+		if (e.getSource() == submitChange) {
+			if (!courseNameAR.getText().isEmpty()) {
+				if (addCourseOption == true) {
+					app.addCourse(new Course(courseNameAR.getText()));
+					coursesMain.getChildren().add(1, getCoursesPane());
+					coursesMain.getChildren().remove(2);
+					main.setScene(courseMenu);
+				}
+				else if (addCourseOption == false) {
+					app.removeCourse(courseNameAR.getText());
+					coursesMain.getChildren().add(1, getCoursesPane());
+					coursesMain.getChildren().remove(2);
+					main.setScene(courseMenu);
+				}
+			}
+		}
+		if (!courseButtonArray.isEmpty()) {
+			for (int i = 0; i < courseButtonArray.size(); i++) {
+				if (e.getSource() == courseButtonArray.get(i)) {
+					main.setScene(getCourseScene(i));
+				
+				}
+			}
+		}
 		
 	}
 
@@ -213,12 +253,36 @@ public class Demo extends Application {
 		GridPane courseList = new GridPane();
 		for (int i = 0; i < Demo.app.getCourses().size(); i++) {
 			Button temp = new Button(Demo.app.getCourses().get(i).getname());
+			courseButtonArray.add(temp);
 			courseList.add(temp, 0, i);
 			temp.setOnAction(this::buttonPressed);
 		}
 		courseList.setVgap(20);
 		courseList.setAlignment(Pos.CENTER);
 		return courseList;
+	}
+	
+	private Scene getCourseScene(int index) {
+		// add-Remove course menu 
+		VBox arVBOX = new VBox();
+		autoAssign = new Button("Auto-Assign Groups");
+		autoAssign.setOnAction(this::buttonPressed);
+		viewGroups = new Button("View Groups");
+		viewGroups.setOnAction(this::buttonPressed);
+		arVBOX.getChildren().addAll(autoAssign,viewGroups);
+		arVBOX.setSpacing(10);
+		arVBOX.setAlignment(Pos.CENTER);
+
+		Text coursequestion = new Text("What would you like to do in " + app.getCourses().get(index-1).getname() + "?");
+		groupsContainer = new Text();
+
+		VBox courseMain2 = new VBox();
+		courseMain2.getChildren().addAll(coursequestion, arVBOX);
+		courseMain2.setAlignment(Pos.TOP_CENTER);
+		courseMain2.setSpacing(20);
+		courseMain2.setPadding(new Insets(20, 0, 0, 0));
+		
+		return new Scene(courseMain2, 500, 500);
 	}
 	
 }
