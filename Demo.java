@@ -14,11 +14,11 @@ public class Demo extends Application {
 	private static Manager app;
 
 	// javafx stuff
-	private Button submitStart, submitInitial, importY, importN;
-	private Scene start, initial, initial2;
+	private Button submitStart, submitInitial, importY, importN, submitImport;
+	private Scene start, initial, initial2, importStudents, courseMenu;
 	private Stage main;
-	private TextField profNameInput, initialCourseInput;
-	private Text initialInfo, initial2Info;
+	private TextField profNameInput, initialCourseInput, stuFiInput, numFiInput, gradeFiInput;
+	private Text initialInfo, initial2Info, importInfo1;
 
 	public void start(Stage primaryStage) {
 		Font titleBold = Font.font("Arial", FontWeight.BOLD, 20);
@@ -87,6 +87,37 @@ public class Demo extends Application {
 
 		initial2 = new Scene(initial2Main, 500, 500);
 		// end of Initial2 Scene
+		
+		//import students from text files
+		GridPane inputFilePane = new GridPane();
+		Label stuFiLabel = new Label("Name of file with Student Names: ");
+		stuFiInput = new TextField();
+		Label numFiLabel = new Label("Name of file with Student ID Numbers: ");
+		numFiInput = new TextField();
+		Label gradeFiLabel = new Label("Name of file with Student Grades: ");
+		gradeFiInput = new TextField();
+		inputFilePane.add(stuFiLabel, 0, 0);
+		inputFilePane.add(stuFiInput, 1, 0);
+		inputFilePane.add(numFiLabel, 0, 1);
+		inputFilePane.add(numFiInput, 1, 1);
+		inputFilePane.add(gradeFiLabel, 0, 2);
+		inputFilePane.add(gradeFiInput, 1, 2);
+		submitImport = new Button("Import Students");
+		submitImport.setOnAction(this::buttonPressed);
+		inputFilePane.add(submitImport, 1, 3);
+		inputFilePane.setVgap(20);
+		inputFilePane.setAlignment(Pos.CENTER);
+
+		importInfo1 = new Text("Please enter the file names.");
+
+		VBox importMain = new VBox();
+		importMain.getChildren().addAll(importInfo1, inputFilePane);
+		importMain.setAlignment(Pos.TOP_CENTER);
+		importMain.setSpacing(20);
+		importMain.setPadding(new Insets(20, 0, 0, 0));
+
+		importStudents = new Scene(importMain, 500, 500);
+		//end of import students from text files
 
 		main.setTitle("Make Groups Great Again");
 		main.setScene(start);
@@ -95,22 +126,27 @@ public class Demo extends Application {
 
 	public void buttonPressed(ActionEvent e) {
 		if (e.getSource() == submitStart) {
-			//add in checks for empty form
-			app = new Manager(new Prof(profNameInput.getText()));
-			main.setScene(initial);
-			initialInfo.setText(app.getProf().getName() + ", you currently are not teaching any courses. Please add a course.");
+			if (profNameInput.getText() != null && !profNameInput.getText().isEmpty()) {
+				app = new Manager(new Prof(profNameInput.getText()));
+				main.setScene(initial);
+				initialInfo.setText(app.getProf().getName() + ", you currently are not teaching any courses. Please add a course.");
+			}
 		}
 		if (e.getSource() == submitInitial) {
-			//add in checks for empty form
-			app.addCourse(new Course(initialCourseInput.getText()));
-			main.setScene(initial2);
-			initial2Info.setText("Would you like to import a student list for " + app.getCourses().get(0).getname() + "?");
+			if (initialCourseInput.getText() != null && !initialCourseInput.getText().isEmpty()) {
+				app.addCourse(new Course(initialCourseInput.getText()));
+				main.setScene(initial2);
+				initial2Info.setText("Would you like to import a student list for " + app.getCourses().get(0).getname() + "?");
+			}
 		}
 		if (e.getSource() == importY) {
-			
+			main.setScene(importStudents);
 		}
 		if (e.getSource() == importN) {
-			//Goto menu
+			main.setScene(courseMenu);
+		}
+		if (e.getSource() == submitImport) {
+			
 		}
 	}
 
@@ -130,19 +166,7 @@ public class Demo extends Application {
 	 * System.out.println("5. "); System.out.println(""); }
 	 * 
 	 * public static void tut() { Scanner kb = new Scanner(System.in);
-	 * System.out.println(app.getProf().getName() +
-	 * ", you currently are not teaching any courses. Please add a course.");
-	 * System.out.println("Please enter the name of the course: ");
-	 * app.addCourse(new Course(kb.nextLine()));
-	 * System.out.println("Would you like to import a student list? (Y/N)");
-	 * String answer = kb.next(); kb.nextLine(); if
-	 * (answer.equalsIgnoreCase("y")) {
-	 * System.out.println("Ok, please enter the name of the Students file: ");
-	 * String stuFile = kb.nextLine();
-	 * System.out.println("Now enter the name of the Student ID file: "); String
-	 * idFile = kb.nextLine();
-	 * System.out.println("Now enter the name of the Student Grades file: ");
-	 * String gradesFile = kb.nextLine(); try {
+	 * try {
 	 * app.getCourses().get(0).importStudents(stuFile, idFile, gradesFile); }
 	 * catch (IOException e) {
 	 * System.out.println("Sorry, there was an error reading the file."); } } }

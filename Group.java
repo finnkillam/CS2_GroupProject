@@ -11,9 +11,14 @@ public class Group {
 	}
 	
 	public void addStudent(Student s){
-		for (int i = 0; i<students.size(); i++) {
-			if (!students.get(i).getName().equalsIgnoreCase(s.getName())&&!students.get(i).getIdNum().equalsIgnoreCase(s.getIdNum())) 
+		if (students.isEmpty()) {
+			students.add(s);
+		}
+		else {	
+			if (!students.contains(s)) {
 				students.add(s);
+				System.out.println("Student Added");
+			}
 			else
 				System.out.println("Can't add duplicate student");
 		}
@@ -53,7 +58,24 @@ public class Group {
 		groupName = gn;
 	}
 	
+	
+	public ArrayList<Student> getStudents() {
+		return students;
+	}
+
+	public void setStudents(ArrayList<Student> students) {
+		this.students = students;
+	}
+
+	public LinkedList getAssignments() {
+		return assignments;
+	}
+
+	public void setAssignments(LinkedList assignments) {
+		this.assignments = assignments;
+	}
+
 	public String toString(){
-		return groupName;
+		return groupName + students;
 	}
 }
