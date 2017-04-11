@@ -1,5 +1,8 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class Course {
@@ -34,6 +37,36 @@ public class Course {
 				allStudents.add(new Student(name,id,grade));
 			else
 				System.out.println("Can't add duplicate student");
+		}
+	}
+	
+	public void autoMakeGroups () {
+		List temp = allStudents;
+		int groupNum = 0;
+		Collections.sort(temp);
+		
+		int frontStu = 0;
+		int endStu = allStudents.size()-1;
+		
+		while (allStudents.size() > groupNum*4) {
+			Group tempGroup = new Group("Group " + ++groupNum);
+			allGroups.add(tempGroup);
+			
+			for (int i = 0; i < 2; i++) {
+				if (frontStu < (allStudents.size()/2)) 
+					tempGroup.addStudent(allStudents.get(frontStu++));
+				if (endStu >= (allStudents.size()/2))
+					tempGroup.addStudent(allStudents.get(endStu--));
+			}
+		}
+		try {
+			PrintWriter saveGroups = new PrintWriter(new FileWriter(name + " - Groups.txt"));
+			for (Group gr : allGroups) {
+				saveGroups.println(gr);
+			}
+			saveGroups.close();
+		} catch (IOException e) {
+			System.out.println("Error");
 		}
 	}
 	
