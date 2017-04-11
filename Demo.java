@@ -250,6 +250,9 @@ public class Demo extends Application {
 		}
 		
 		if (e.getSource() == backButton) {
+			if (courseButtonArray.size()==0) {
+				coursesMain.getChildren().add(1, getCoursesPane());
+			}
 			main.setScene(courseMenu);
 		}
 		
@@ -257,8 +260,6 @@ public class Demo extends Application {
 
 	public static void main(String[] args) {
 		launch();
-		// save groups.txt below this line
-
 	}
 	
 	private Pane getCoursesPane () {
