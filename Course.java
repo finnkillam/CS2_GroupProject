@@ -59,6 +59,15 @@ public class Course {
 					tempGroup.addStudent(allStudents.get(endStu--));
 			}
 		}
+		try {
+			PrintWriter saveGroups = new PrintWriter(new FileWriter(name + " - Groups.txt"));
+			for (Group gr : allGroups) {
+				saveGroups.println(gr);
+			}
+			saveGroups.close();
+		} catch (IOException e) {
+			System.out.println("Error");
+		}
 	}
 	
 	//get-set below

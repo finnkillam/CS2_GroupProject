@@ -13,9 +13,10 @@ import javafx.geometry.*;
 
 public class Demo extends Application {
 	public static Manager app;
+	private int courseIndex = 0;
 
 	// javafx stuff
-	private Button submitStart, submitInitial, importY, importN, submitImport, addCourseButton, removeCourseButton, submitChange, autoAssign, viewGroups, backButton;
+	private Button submitStart, submitInitial, importY, importN, submitImport, addCourseButton, removeCourseButton, submitChange, autoAssign, viewGroups, backButton, addStudent;
 	private Scene start, initial, initial2, importStudents, courseMenu, courseMenu2;
 	public Stage main;
 	private TextField profNameInput, initialCourseInput, stuFiInput, numFiInput, gradeFiInput, courseNameAR;
@@ -27,7 +28,6 @@ public class Demo extends Application {
 
 	public void start(Stage primaryStage) {
 		Font titleBold = Font.font("Arial", FontWeight.BOLD, 20);
-		Font fontReg1 = Font.font("Arial", FontWeight.NORMAL, 14);
 		main = primaryStage;
 
 		// start menu Scene
@@ -186,6 +186,7 @@ public class Demo extends Application {
 		}
 		if (e.getSource() == importY) {
 			main.setScene(importStudents);
+			importInfo2.setText("");
 		}
 		if (e.getSource() == importN) {
 			coursesMain.getChildren().add(1, getCoursesPane());
@@ -194,13 +195,13 @@ public class Demo extends Application {
 		if (e.getSource() == submitImport) {
 			if (!stuFiInput.getText().isEmpty() && !numFiInput.getText().isEmpty() && !gradeFiInput.getText().isEmpty()) {
 				try {
-					app.getCourses().get(0).importStudents(stuFiInput.getText(), numFiInput.getText(), gradeFiInput.getText());
+					app.getCourses().get(courseIndex).importStudents(stuFiInput.getText(), numFiInput.getText(), gradeFiInput.getText());
 					importInfo2.setVisible(true);
 					importInfo2.setText("Students Imported Successfully");
-					coursesMain.getChildren().add(1, getCoursesPane());
-					main.setScene(courseMenu);
+					main.setScene(getCourseScene(courseIndex));
 				} catch (IOException error) {
 					importInfo2.setVisible(true);
+					importInfo2.setText("There was an error reading a file. Please check the entered text");
 				}
 			}
 		}
@@ -240,6 +241,14 @@ public class Demo extends Application {
 				}
 			}
 		}
+		if (e.getSource() == autoAssign) {
+			app.getCourses().get(courseIndex).autoMakeGroups();
+			groupsContainer.setText("Groups have been made and saved");
+		}
+		if (e.getSource() == viewGroups) {
+			groupsContainer.setText(app.getCourses().get(courseIndex).getAllGroups().toString());
+		}
+		
 		if (e.getSource() == backButton) {
 			main.setScene(courseMenu);
 		}
@@ -267,15 +276,23 @@ public class Demo extends Application {
 	}
 	
 	private Scene getCourseScene(int index) {
+		courseIndex = index;
 		// add-Remove course menu 
 		VBox arVBOX = new VBox();
 		autoAssign = new Button("Auto-Assign Groups");
 		autoAssign.setOnAction(this::buttonPressed);
 		viewGroups = new Button("View Groups");
 		viewGroups.setOnAction(this::buttonPressed);
+		importY = new Button("Import Students");
+		importY.setOnAction(this::buttonPressed);
 		backButton = new Button("Back");
 		backButton.setOnAction(this::buttonPressed);
-		arVBOX.getChildren().addAll(autoAssign,viewGroups,backButton);
+		
+		arVBOX.getChildren().addAll(importY,backButton);
+		if (!app.getCourses().get(index).getAllStudents().isEmpty()) {
+			arVBOX.getChildren().add(0, autoAssign);
+			arVBOX.getChildren().add(1, viewGroups);
+		}
 		arVBOX.setSpacing(10);
 		arVBOX.setAlignment(Pos.CENTER);
 
@@ -283,12 +300,12 @@ public class Demo extends Application {
 		groupsContainer = new Text();
 
 		VBox courseMain2 = new VBox();
-		courseMain2.getChildren().addAll(coursequestion, arVBOX);
+		courseMain2.getChildren().addAll(coursequestion, arVBOX, groupsContainer);
 		courseMain2.setAlignment(Pos.TOP_CENTER);
 		courseMain2.setSpacing(20);
 		courseMain2.setPadding(new Insets(20, 0, 0, 0));
 		
-		return new Scene(courseMain2, 500, 500);
+		return new Scene(courseMain2, 700, 400);
 	}
 	
 }

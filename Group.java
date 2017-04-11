@@ -13,12 +13,8 @@ public class Group {
 			students.add(s);
 		}
 		else {	
-			if (!students.contains(s)) {
+			if (!students.contains(s)) 
 				students.add(s);
-				System.out.println("Student Added");
-			}
-			else
-				System.out.println("Can't add duplicate student");
 		}
 	}
 	public void removeStudent(String name) {
@@ -47,6 +43,6 @@ public class Group {
 	}
 
 	public String toString(){
-		return groupName + students;
+		return groupName + students + "\n";
 	}
 }
